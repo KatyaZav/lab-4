@@ -6,9 +6,9 @@
 
 | Задание | Выполнение | Баллы |
 | ------ | ------ | ------ |
-| Задание 1 | # | 60 |
-| Задание 2 | # | 20 |
-| Задание 3 | # | 20 |
+| Задание 1 | * | 60 |
+| Задание 2 | * | 20 |
+| Задание 3 | * | 20 |
 
 знак "*" - задание выполнено; знак "#" - задание не выполнено;
 
@@ -48,51 +48,187 @@
 публикации на web-ресурсе»
 
 Ход работы:
-1) Реализовать механизм ловли золота.
+1) Дбавить анимацию вагонетки.
 
-Добавлю код поимки золота вагонетке, воспользовавшись интерфейсом.
-```c#
+Этот пункт был выполнен в самой первой лабораторной работе. Была добавлена анимация вагонетки и восклицательного знака.
 
-```
+![Фото](https://github.com/KatyaZav/lab-4/blob/main/Screens/1%20task/1.gif)
 
+2) Создать стартовую сцену и добавить перемещение между сценами.
 
-
-![Фото](https://github.com/KatyaZav/lab-3/blob/main/Screens/1%20task/1.gif)
-
-2) Добавить UI счетчик очков.
-Начну с создания общего класса, в котором будет храниься вся информация по игроку. Как можно увидеть, в коде есть применение ивентов (событий).
+Для простоты кода я сделала отдельный класс MainMenu, тут будут функции паузы, переключения сцен, настройка звука.
+Сейчас напишу реализацию переключения между сценами:
 
 ```c#
+public class MainMenu : MonoBehaviour
+{
 
+    AudioSource manager;
+    public static float VolumeMusic=1;
+    public static float VolumeSounds=1;
+
+    private void Start()
+    {
+        manager = GetComponent<AudioSource>();
+    }
+    public void LoadScene(int number)
+    {
+        Statistics.EndGame();
+        SceneManager.LoadScene(number);
+    }
+}
 ```
 
+Итого все выглядит так:
 
+![Видео](https://github.com/KatyaZav/lab-4/blob/main/Screens/1%20task/2.gif)
 
-![Видео](https://github.com/KatyaZav/lab-3/blob/main/Screens/1%20task/2.gif)
+3) Создание механики паузы
+Добавлю в скрипт метод паузы.
 
-3) 
 ```c#
-
+public void MakePause(bool isPause)
+    {
+        if (isPause)
+            Time.timeScale = 0;
+        else
+            Time.timeScale = 1;
+    }
 ```
+
+Главное не забыть добавить этот скрипт кнопке.
+
+![Видео](https://github.com/KatyaZav/lab-4/blob/main/Screens/1%20task/3.gif)
+
+4) Добавить звук и мелодию.
+
+Сначала эти звуки надо найти. Я искала их в открытых и бесплатных источниках (не асетах юнити). 
+
+Потом надо добавить элементам эти звуки.
+![Видео](https://github.com/KatyaZav/lab-4/blob/main/Screens/1%20task/4.1.jpg)
+
+Важно: для задания 3 придется полностью переделывать систему звука, если об этом не позаботиться заранее! Я сделала пустой элемент, который в определенных условиях будет производить нужный звук. Этот элемент будет помечен определенным тегом. Музыка будет в камере (она есть на всех сценах и у нее есть свой тег).
+
+```c#
+public class SoundManager : MonoBehaviour
+{
+    [SerializeField] AudioClip ButtonClick;
+    [SerializeField] AudioClip GoldCatched;
+    [SerializeField] AudioClip GoldDrop;
+
+    [SerializeField]AudioSource sourse;
+
+    void Start()
+    {
+        sourse = GetComponent<AudioSource>();
+
+        Statistics.UpdateGameCount += Count;
+        Statistics.LosedPoint += Lose;
+    }
+
+    private void Count(int x)
+    {
+        sourse.PlayOneShot(GoldCatched);
+    }
+
+    private void Lose()
+    {
+        sourse.PlayOneShot(GoldDrop);
+    }
+
+    public void ButtonSound()
+    {
+        sourse.PlayOneShot(ButtonClick);
+    }
+}
+```
+
+![Видео](https://github.com/KatyaZav/lab-4/blob/main/Screens/1%20task/4.2.jpg)
+
+5) Cделать билд сцен.
+
+Добавлять персонажа на сцену мне не нужно, поэтому перейду к созданию билда. Перехожу в Build Settings, и запускаю процесс билда.
+
+![Видео](https://github.com/KatyaZav/lab-4/blob/main/Screens/1%20task/5.jpg)
 
 
 ## Задание 2
-### Добавить в приложение интерфейс для вывода статуса наличия игрока в сети (онлайн или офлайн).
+### Привести описание того, как происходит сборка проекта проекта под другие платформы. Какие могут быть особенности?
 
 Ход работы:
-1) 
+1) Посмотреть какие бывают стандартные сборки:
+- Мобильное устройства
+- Веб
+- ПК
 
+Из неосновных:
+- VR
+- PS4, например
 
+Каждый из этих варантов запускается только на определенном устройстве (для веба нужен сервер, для запуска надо загрузить на платформу или выбрать "build and run").
+
+![фото](https://github.com/KatyaZav/lab-4/blob/main/Screens/2%20task/1.jpg)
 
 ## Задание 3
-### Реализовать вывод в консоль количества времени отсутствия игрока в сети если пользователь офлайн.
+### Добавить в меню Option возможность изменения громкости (от 0 до 100%) фоновой музыки в игре.
 
 Ход работы:
+1) Дополнить код класса для слайдера-настройки звукового проигрывателя.
 
+```c#
+public class _Slider : MonoBehaviour
+{
+    Slider slider;
+    public bool isMusic;
+
+    MainMenu soundManager;
+
+    private void OnEnable()
+    {
+        if (slider == null)
+            Start();
+
+        //Debug.Log("enable");
+        if (isMusic)
+            slider.value = MainMenu.VolumeMusic;
+        else
+            slider.value = MainMenu.VolumeSounds;
+    }
+
+    void Start()
+    {
+        soundManager = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<MainMenu>();
+        slider = GetComponent<Slider>();
+
+        if (isMusic)
+            slider.value = MainMenu.VolumeMusic;
+        else
+            slider.value = MainMenu.VolumeSounds;
+    }
+
+    public void UpdateSoundsVolume()
+    {
+        MainMenu.VolumeSounds = slider.value;
+        soundManager.UpdateVolume();
+    }
+
+    public void UpdateMusicVolume()
+    {
+        MainMenu.VolumeMusic = slider.value;
+        soundManager.UpdateVolume();
+    }
+}
+```
+
+Осталось все скрипты повесить на объекты.
+
+![фото](https://github.com/KatyaZav/lab-4/blob/main/Screens/3%20task/1.gif)
 
 ## Выводы
 
+Я попыталась сделать базовую навигацию кнопок, научилась работать со звуками и музыкой, поработала со слайдерами.
 
+Так же я посмотрела возможные платформы для билда.
 
 ## Powered by
 
