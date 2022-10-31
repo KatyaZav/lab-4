@@ -170,6 +170,8 @@ public class SoundManager : MonoBehaviour
 
 ![фото](https://github.com/KatyaZav/lab-4/blob/main/Screens/2%20task/1.jpg)
 
+Ссылка на ЯндексИгры: https://yandex.ru/games/app/190276?draft=true&lang=ru.
+
 ## Задание 3
 ### Добавить в меню Option возможность изменения громкости (от 0 до 100%) фоновой музыки в игре.
 
